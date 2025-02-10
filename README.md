@@ -25,9 +25,10 @@ Overview da ferramenta, alguma figurinha
 #### Add output port
 Add the output port for the configurated traffic
 Parameters: P_ID of output port (Tofino P-ID)
+
 Usage:
 ```python
-# addGenerationPort(P_ID)
+#addGenerationPort(P_ID)
 Gen.addGenerationPort(68)
 ```
 
