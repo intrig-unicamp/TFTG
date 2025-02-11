@@ -35,27 +35,6 @@ Gerador.addGenerationPort(68)
 Gerador.addOutputPort(5, 160, "100G") #Physical Port, Port ID(D_P), Port bw
 ```
 
-
-<!-- Isso é um comentário e não será exibido no GitHub 
-
-
-fim do intervalo
-#### ATS Case 3
-#### FRER Case 4
-#### PREOF Case 4
-#### Reordering Case 5
-Gerador.reodering(False)
-Gerador.reoderingLayer(2) # 2 FREF (TSN), 3 PREOF (DETNET)
-#### gPTP Case 6
-Gerador.setSyncPort(5,160) #Physical Port, Port ID(D_P)
-Gerador.setGptpParams(syncInt = 125, correctField = 0, rateRatio = 1) # intervalo de sincronização (ms), valor setado pro correctionField (ns), valor setado pro rateRatio 
-
-
-Gerador.generate()
-
--->
-
-
 ### Generation commands
 
 #### Add a packet flow
@@ -121,9 +100,13 @@ Gerador.setGB(True) # Se verdadeiro deve computar a guardband (pkt_size/throughp
 
 #### ATS
 
-### Replicating packets
+### Replicating/Reordering packets
 
-### Reordering packets
+
+```python
+Gerador.FRER(False,replicating=True,reordering=False)
+Gerador.PREOF(False,replicating=True,reordering=False)
+```
 
 ### Time Synchronization
 
