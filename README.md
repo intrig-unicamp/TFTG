@@ -121,6 +121,20 @@ Gerador.setGB(True) # Se verdadeiro deve computar a guardband (pkt_size/throughp
 
 #### ATS
 
+### Replicating packets
+
+### Reordering packets
+
+### Time Synchronization
+
+A special packet that TFTG can emit is synchronization packets from TSN, using the gPTP, where we can also change some parameters as needed.
+
+Usage
+
+```python
+Gerador.setSyncPort(5,160) #Physical Port, Port ID(D_P)
+Gerador.setGptpParams(syncInt = 125, correctField = 0, rateRatio = 1) # intervalo de sincronização (ms), valor setado pro correctionField (ns), valor setado pro rateRatio 
+```
 
 
 ## Examples
