@@ -26,12 +26,12 @@ git clone https://github.com/intrig-unicamp/TFTG.git
 
 ## How to use
 
-From the sde directory set environment variables.
+From the sde directory set environment variables
 ```terminal
 $TOOLS/set_sde.bash
 ```
 
-Enable the output port set in main.py
+Enable the output port
 ```
 bfshell
 ucli
