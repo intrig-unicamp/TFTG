@@ -14,9 +14,9 @@ TFTG, a traffic generator based on Tofino capable of creating TSN and DetNet tra
 
 ## How to install
 
-'''terminal
+```terminal
 git clone https://github.com/intrig-unicamp/TFTG.git
-'''
+```
 
 ### Requirements
 
@@ -27,19 +27,19 @@ git clone https://github.com/intrig-unicamp/TFTG.git
 ## How to use
 
 From the sde directory set environment variables.
-'''terminal
+```terminal
 $TOOLS/set_sde.bash
-'''
+```
 
 Enable the output port set in main.py
-'''
+```
 bfshell
 ucli
 pm
 port-add 5/- 100G NONE
 port-enb 5/-
 an-set 3/- 2
-'''
+```
 
 ## Available commands
 
