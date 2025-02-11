@@ -2,10 +2,11 @@
 
 Repository of paper NETWORK-24-00606 submitted for IEEE Network Magazine special issue of Deterministic, Reliable, Resilient and Programmable Networks for 6G.
 
-## Overview
+## About TFTG
 
-Overview da ferramenta, alguma figurinha
+TFTG, a traffic generator based on Tofino capable of creating TSN and DetNet traffic with nanoscale precision and high throughput. The proposed solution can be used in different scenarios to test standards for synchronization, reliability, and scheduling, with high flexibility in its applications.  With these functionalities, TFTG serves as an open-source solution that users can employ to test target device capabilities, abstracting different topologies and scenarios for multiple protocols and testbed configurations.
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Available features
 
@@ -13,10 +14,32 @@ Overview da ferramenta, alguma figurinha
 
 ## How to install
 
+'''terminal
+git clone https://github.com/intrig-unicamp/TFTG.git
+'''
+
 ### Requirements
+
+- git
+- pyhton3
+- tofino sde 9.12.0
 
 ## How to use
 
+From the sde directory set environment variables.
+'''terminal
+$TOOLS/set_sde.bash
+'''
+
+Enable the output port set in main.py
+'''
+bfshell
+ucli
+pm
+port-add 5/- 100G NONE
+port-enb 5/-
+an-set 3/- 2
+'''
 
 ## Available commands
 
