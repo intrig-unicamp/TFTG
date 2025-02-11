@@ -39,9 +39,7 @@ Gerador.addOutputPort(5, 160, "100G") #Physical Port, Port ID(D_P), Port bw
 <!-- Isso é um comentário e não será exibido no GitHub 
 
 
-#### TAS Case 2
-Gerador.setGclPriPort(5, 160, 1, 100, 900, 0) #Physical Port, Port ID(D_P), priority (0-7), Time Open (ns), Time Closed (ns), Offset (ns)
-Gerador.setGB(True) # Se verdadeiro deve computar a guardband (pkt_size/throughput) para n mandar pacotes mesmo q com o gate aberto antes do fim do intervalo
+fim do intervalo
 #### ATS Case 3
 #### FRER Case 4
 #### PREOF Case 4
@@ -94,8 +92,34 @@ For flows computed, the interval (ns) to generate the packets are required. Opti
 
 ```python
 # distribution(name = "flow", sendInt, intStdDev = 0) 
-Gerador.distribution(name, sendInt = 100, intStdDev = 0)
+Gerador.distribution(name, sendInt = 10000, intStdDev = 10)
 ```
+
+### Gate Control Standards
+
+By default, no standards are applied. The user must define between the available standards to start using it
+
+```python
+Gerador.setGateControl(mode="")
+```
+
+#### TAS
+
+Each gate of each port that will apply the standard must define its parameters. Another function that can be used is to set if the guard bands of the standard will be calculated or assumed to be inside the values already sent.
+
+Mandatory parameters: 
+ - P_ID of output port (Tofino P-ID)
+ - queue for where the packet is forwarded
+ - Time_Open and Time_Closed, defining the time the gate will be oppened and closed respectvely
+ - Time_Offset, indicating when the gate will start to be oppen
+
+```python
+Gerador.setGateControl(mode="TAS")
+Gerador.setGclPriPort(160, 1, 100, 900, 0) #Port ID(D_P), PCP (0-7), Time Open (ns), Time Closed (ns), Offset (ns)
+Gerador.setGB(True) # Se verdadeiro deve computar a guardband (pkt_size/throughput) para n mandar pacotes mesmo q com o gate aberto antes do 
+```
+
+#### ATS
 
 
 
