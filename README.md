@@ -75,11 +75,11 @@ Mandatory parameters:
   Name of the flow (for later identification)
 
 Optional parameter
-  MODE of generation (could be by histograms or using numerical parameters)
-  PCP, indicating the priority of the flow (0-7)
-  PktLen, with the packet size in bytes
-  Eth_src and  Eth_dest, indicating the MAC source and destination
-  IP_src and  IP_dest, indicating the IP source and destination
+ - MODE of generation (could be by histograms or using numerical parameters)
+ - PCP, indicating the priority of the flow (0-7)
+ - PktLen, with the packet size in bytes
+ - Eth_src and  Eth_dest, indicating the MAC source and destination
+ - IP_src and  IP_dest, indicating the IP source and destination
   
 ```python
 Gerador.addFlow(name,mode="computed",PCP=0,PktLen=654,Eth_src="10.2.2.2",Eth_dest="10.2.2.3",IP_src="198.168.1.0",IP_dest="198.168.1.1")
