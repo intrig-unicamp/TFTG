@@ -30,12 +30,20 @@ Usage:
 ```python
 # addGenerationPort(P_ID) Adiciona a porta de geração de trafego
 Gerador.addGenerationPort(68)
+
+# Adiciona a porta de saida do equipamento
+Gerador.addOutputPort(5, 160, "100G") #Physical Port, Port ID(D_P), Port bw
 ```
 
 
 <!-- Isso é um comentário e não será exibido no GitHub 
 
 Gerador = generator("pipo")
+
+
+# Adiciona os endereços de fonte e destino do pacote
+Gerador.addIP(IP_dst="10.2.2.2", IP_src = "10.2.2.1") # ?
+Gerador.addEth(eth_dst="10.2.2.2", Eth_src = "10.2.2.1") # ?
 
 #### TAS Case 2
 Gerador.addFlow("name", 1, 150) # nome (para identificar), Priority (0-7), size (B)
@@ -59,17 +67,22 @@ Gerador.generate()
 
 ### Generation commands
 
+#### Add a packet flow
+Add a new flow of packets to be generated. The optional parameters have default values
+Mandatory parameters: 
+  Name of the flow (for later identification)
+Optional parameter
+  MODE of generation (could be by histograms or using numerical parameters)
+  PCP, indicating the priority of the flow (0-7)
+  PktLen, with the packet size in bytes
+  Eth_src and  Eth_dest, indicating the MAC source and destination
+  IP_src and  IP_dest, indicating the IP source and destination
+  
 ```python
-# genMode(mode) Recebe uma string ("histogram" ou "computed") indicando se o trafego será gerado a partir de um histograma, ou definido por parâmetros
-Gerador.genMode("")
-
-# Adiciona a porta de saida do equipamento
-Gerador.addOutputPort(5, 160, "100G") #Physical Port, Port ID(D_P), Port bw
-
-# Adiciona os endereços de fonte e destino do pacote
-Gerador.addIP(IP_dst="10.2.2.2", IP_src = "10.2.2.1") # ?
-Gerador.addEth(eth_dst="10.2.2.2", Eth_src = "10.2.2.1") # ?
+Gerador.addFlow(name,mode="computed",PCP=0,PktLen=654,Eth_src="10.2.2.2",Eth_dest="10.2.2.3",IP_src="198.168.1.0",IP_dest="198.168.1.1")
 ```
+
+The Optional parameters can be set later in the code
 
 ```python
 Gerador.genMode("histogram")
