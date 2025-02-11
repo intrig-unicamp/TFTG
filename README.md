@@ -69,8 +69,11 @@ Gerador.generate()
 
 #### Add a packet flow
 Add a new flow of packets to be generated. The optional parameters have default values
+
 Mandatory parameters: 
+
   Name of the flow (for later identification)
+
 Optional parameter
   MODE of generation (could be by histograms or using numerical parameters)
   PCP, indicating the priority of the flow (0-7)
