@@ -74,13 +74,10 @@ Optional parameters
  - IP_src and  IP_dest, indicating the IP source and destination
   
 ```python
-Gerador.addFlow(name,mode="computed",PCP=0,PktLen=654,Eth_src="10.2.2.2",Eth_dest="10.2.2.3",IP_src="198.168.1.0",IP_dest="198.168.1.1")
-
-Gerador.setMode(name,mode="histogram")
-Gerador.setPCP(name,PCP=7)
-Gerador.setPktLen(name,PktLen=64)
-Gerador.setEth(name,Eth_src="10.2.2.2",Eth_dest="10.2.2.3")
-Gerador.setIP(name,IP_src="198.168.1.0",IP_dest="198.168.1.1")
+Gerador.addFlow(name,distMode="computed", PktType="TSN/DETNET",
+                Payload=64,
+                Eth_src="10.2.2.2",Eth_dest="10.2.2.3",
+                IP_src="198.168.1.0",IP_dest="198.168.1.1")
 
 ```
 
@@ -138,8 +135,7 @@ A special packet that TFTG can emit is synchronization packets from TSN, using t
 Usage
 
 ```python
-Gerador.setSyncPort(5,160) #Physical Port, Port ID(D_P)
-Gerador.setGptpParams(syncInt = 125, correctField = 0, rateRatio = 1) # intervalo de sincronização (ms), valor setado pro correctionField (ns), valor setado pro rateRatio 
+Gerador.gPTP(syncInt = 125, correctField = 0, rateRatio = 1) # intervalo de sincronização (ms), valor setado pro correctionField (ns), valor setado pro rateRatio 
 ```
 
 
