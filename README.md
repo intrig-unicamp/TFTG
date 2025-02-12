@@ -74,10 +74,8 @@ Optional parameters
  - IP_src and  IP_dest, indicating the IP source and destination
   
 ```python
-Gerador.addFlow(name,distMode="computed", PktType="TSN/DETNET",
-                Payload=64,
-                Eth_src="10.2.2.2",Eth_dest="10.2.2.3",
-                IP_src="198.168.1.0",IP_dest="198.168.1.1")
+Gerador.addFlow(name,distMode="computed", PktType="TSN/DETNET", Payload=64,
+                Eth_src="10.2.2.2",Eth_dest="10.2.2.3", IP_src="198.168.1.0",IP_dest="198.168.1.1")
 
 ```
 
