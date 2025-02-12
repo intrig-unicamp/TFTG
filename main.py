@@ -1,4 +1,4 @@
-from data import *
+from src.data import *
 
 TG = generator("tftg")
 
