@@ -9,6 +9,9 @@ class generator:
         self.port_bw = ''
         #TSN
         self.pktlen = 64
+        #flags
+        self.IP_defined = False
+        self.ETH_defined = False
         
     def addGenerationPort(self, port):
         self.generation_port = port
@@ -55,3 +58,24 @@ class generator:
     def setSyncPort(self, port, channel):
         self.output_port = port #seria a mesma porta de output ou seria outro parametro?
         self.channel = channel
+        
+    def addEthernet(self, eth_src = None, eth_dst = None, type = 'Ipv4',data = None):
+        self.ETH_defined = True
+        self.eth_dst = eth_dst
+        self.eth_src = eth_src
+        self.type = type
+        self.data = data
+       
+    def addIP(self, pktlen=64,ip_src="192.168.0.1", ip_dst="192.168.0.2", ip_tos=0, ip_ttl=64, ip_id=0x0001, ip_proto=0):
+        self.IP_defined = True
+        self.pktlen = pktlen
+        self.ip_src = ip_src
+        self.ip_dst = ip_dst
+        self.ip_tos = ip_tos
+        self.ip_ttl = ip_ttl
+        self.ip_id = ip_id
+        self.ip_proto = ip_proto
+        
+    #send to generateFiles
+    #def ganerate(self)
+    #generatePy(blabla)
