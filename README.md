@@ -149,3 +149,4 @@ Gerador.setGptpParams(syncInt = 125, correctField = 0, rateRatio = 1) # interval
 
 
 ## Team
+We are members of [INTRIG (Information & Networking Technologies Research & Innovation Group)](https://intrig.dca.fee.unicamp.br/) at Universidade Estudal Campinas - Unicamp, SP, Brazil and [SMART NEtworks and ServiceS for 2030 (SMARTNESS)](https://smartness2030.tech/)
