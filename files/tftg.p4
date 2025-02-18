@@ -45,7 +45,7 @@ struct headers {
 }
 
 struct my_ingress_metadata_t {
-
+	bit<8> ctrl;
 }
 
 struct my_egress_metadata_t {
@@ -72,6 +72,7 @@ parser SwitchIngressParser(
 
 	state parse_pktgen_timer {
 		//packet.extract(hdr.timer);
+		ig_md.ctrl = 2;
 		transition parse_ethernet;
 	}
 
@@ -107,10 +108,30 @@ control SwitchIngress(
 	inout ingress_intrinsic_metadata_for_deparser_t ig_intr_dprsr_md,
 	inout ingress_intrinsic_metadata_for_tm_t ig_intr_tm_md) {
 		
+	action drop() {
+		ig_intr_dprsr_md.drop_ctl = 0x1;
+	}
+	
+	action send(PortId_t port) {
+		ig_intr_tm_md.ucast_egress_port = port;
+	}
+  
+	table fwd {
+		key = {
+			ig_md.ctrl	:	exact;
+		}
+		actions = {
+			send;
+			drop;
+		}
+		const default_action = drop();
+		size = 1024;
+	}
 		
 	apply {
 		if(hdr.ipv4.isValid()){
-			ig_intr_tm_md.ucast_egress_port = 164;
+			//ig_intr_tm_md.ucast_egress_port = 164;
+			fwd.apply();
 		}else{
 			ig_intr_dprsr_md.drop_ctl = 0x1;
 		}
