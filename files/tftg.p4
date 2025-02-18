@@ -129,12 +129,9 @@ control SwitchIngress(
 	}
 		
 	apply {
-		if(hdr.ipv4.isValid()){
-			//ig_intr_tm_md.ucast_egress_port = 164;
-			fwd.apply();
-		}else{
-			ig_intr_dprsr_md.drop_ctl = 0x1;
-		}
+		
+		fwd.apply();
+		
 	}
 		
 }
