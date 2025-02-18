@@ -57,7 +57,7 @@ p = testutils.simple_ipv4ip_packet(pktlen=pktlen)
 
 print("enable pktgen port")
 
-pktgen_port_cfg_table.entry_add(
+pktgen_port_cfg_table.entry_mod(
   target,
   [pktgen_port_cfg_table.make_key([gc.KeyTuple('dev_port', src_port)])],
   [pktgen_port_cfg_table.make_data([gc.DataTuple('pktgen_enable', bool_val=True)])])

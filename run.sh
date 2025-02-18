@@ -15,10 +15,10 @@ sleep 30
 
 
 #Config PORTS
-/$SDE/run_bfshell.sh -f files/portConfig.txt 
+/$SDE/run_bfshell.sh -f files/portConfig 
 
 #Config Tables, Registers etc
-/$SDE/run_bfshell.sh -b files/tftgControlPlane.py 
+#/$SDE/run_bfshell.sh -b files/tftgControlPlane.py 
 
 sleep 10
 

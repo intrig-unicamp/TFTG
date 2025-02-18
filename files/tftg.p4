@@ -71,7 +71,7 @@ parser SwitchIngressParser(
 	}
 
 	state parse_pktgen_timer {
-		packet.extract(hdr.timer);
+		//packet.extract(hdr.timer);
 		transition parse_ethernet;
 	}
 
