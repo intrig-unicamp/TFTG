@@ -29,32 +29,15 @@ target = gc.Target(device_id=0, pipe_id=0xffff)
 
 
 
-# ####### t_table ########
-print("clean timer table")
-resp = t_fwd_table.entry_get(target, [], {"from_hw": True})
-for _, key in resp:
-  if key:
-      t_fwd_table.entry_del(target, [key])
-
 print("configure timer table")
 i_port = 68     # Default port for pktgen
 pipe_id = 0
 g_timer_app_id = 1
 batch_id = [0,1,2,3] # 0,1,2,3
 packet_id = [0,1] # 0,1
-o_port = 160     # HW port to send the packets
+#o_port = 160     # HW port to send the packets
 
 
-t_fwd_table.entry_add(
- target,
-  [t_fwd_table.make_key([ gc.KeyTuple('ig_intr_md.ingress_port', i_port),
-                      gc.KeyTuple('hdr.timer.pipe_id', pipe_id),
-                      gc.KeyTuple('hdr.timer.app_id', g_timer_app_id),
-                      gc.KeyTuple('hdr.timer.batch_id', batch_id[0]),
-                      gc.KeyTuple('hdr.timer.packet_id', packet_id[0])])],
-  [t_fwd_table.make_data([gc.DataTuple('port', o_port)],
-                      'SwitchIngress.match')]
-)
 
 pktgen_app_cfg_table = bfrt_info.table_get("app_cfg")
 pktgen_pkt_buffer_table = bfrt_info.table_get("pkt_buffer")
@@ -70,7 +53,7 @@ buff_offset = 144  # generated packets' payload will be taken from the offset in
 
 # build expected generated packets
 print("Create packet")
-p = testutils.simple_eth_packet(pktlen=pktlen)
+p = testutils.simple_ipv4ip_packet(pktlen=pktlen)
 
 print("enable pktgen port")
 

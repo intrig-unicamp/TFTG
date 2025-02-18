@@ -38,6 +38,7 @@ header ipv4_h {
 }
 
 struct headers {
+	pktgen_timer_header_t timer;
 	ethernet_h	ethernet;
 	vlan_tag_h	vlan_tag;
 	ipv4_h		ipv4;
@@ -61,6 +62,16 @@ parser SwitchIngressParser(
 	state start {
 		packet.extract(ig_intr_md);
 		packet.advance(PORT_METADATA_SIZE);
+		
+		pktgen_timer_header_t pktgen_pd_hdr = packet.lookahead<pktgen_timer_header_t>();
+		transition select(pktgen_pd_hdr.app_id) {
+			1 : parse_pktgen_timer;
+			default : reject;
+		}	
+	}
+
+	state parse_pktgen_timer {
+		packet.extract(hdr.timer);
 		transition parse_ethernet;
 	}
 
@@ -98,7 +109,11 @@ control SwitchIngress(
 		
 		
 	apply {
-		
+		if(hdr.ipv4.isValid()){
+			ig_intr_tm_md.ucast_egress_port = 164;
+		}else{
+			ig_intr_dprsr_md.drop_ctl = 0x1;
+		}
 	}
 		
 }
@@ -124,6 +139,28 @@ parser SwitchEgressParser(
 	
 	state start {
 		pkt.extract(eg_intr_md);
+		transition parse_ethernet;
+	}
+	
+	state parse_ethernet {
+		packet.extract(hdr.ethernet);
+		transition select(hdr.ethernet.ether_type) {
+			ETHERTYPE_IPV4:  parse_ipv4;
+			ETHERTYPE_VLAN:  parse_vlan;
+			default: accept;
+		}
+	}
+
+	state parse_vlan {
+		packet.extract(hdr.vlan_tag);
+		transition select(hdr.vlan_tag.ether_type) {
+			ETHERTYPE_IPV4:  parse_ipv4;
+			default: accept;
+		}
+	}
+	
+	state parse_ipv4 {
+		packet.extract(hdr.ipv4);
 		transition accept;
 	}
 }
