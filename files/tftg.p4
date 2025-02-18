@@ -132,13 +132,13 @@ control SwitchIngressDeparser(
 
 
 parser SwitchEgressParser(
-	packet_in pkt,
+	packet_in packet,
 	out headers hdr,
 	out my_egress_metadata_t eg_md,
 	out egress_intrinsic_metadata_t eg_intr_md) {
 	
 	state start {
-		pkt.extract(eg_intr_md);
+		packet.extract(eg_intr_md);
 		transition parse_ethernet;
 	}
 	
