@@ -83,6 +83,6 @@ class generator:
     def ganerate(self):
         
         generatePortConfig(self.output_port, self.channel, self.port_bw) # type: ignore
-        generateP4() # type: ignore
-        generateControlPlane() # type: ignore
-        generateTGentries() # type: ignore
+        #generateP4() # type: ignore
+        #generateControlPlane() # type: ignore
+        #generateTGentries() # type: ignore
