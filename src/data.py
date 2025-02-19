@@ -36,9 +36,10 @@ class generator:
         self.ip_src = ip_src
         self.ip_dst = ip_dst
         
-    def histogram(self, name, file):
+    def histogram(self, name, file, delayMode=1):
         self.name = name
         self.file = file
+        self.delayMode = delayMode
 
     def distribuition(self, name, sendInt=10000, intStdDev =10):
         self.name = name
@@ -82,7 +83,7 @@ class generator:
     #send to generateFiles
     def generate(self):
         
-        generatePortConfig(self.output_port, self.channel, self.port_bw) # type: ignore
-        generateP4() # type: ignore
-        generateControlPlane(self.channel) # type: ignore
-        generateTGentries(self.generation_port) # type: ignore
+        #generatePortConfig(self.output_port, self.channel, self.port_bw) # type: ignore
+        #generateP4() # type: ignore
+        generateControlPlane(self.channel, self.file, self.delayMode) # type: ignore
+        #generateTGentries(self.generation_port) # type: ignore

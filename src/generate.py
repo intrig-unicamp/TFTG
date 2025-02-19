@@ -1,3 +1,6 @@
+import re
+import random
+
 def generateTGentries(generation_port):
     entries = open("files/TGEntries.py", "w")
     
@@ -108,18 +111,43 @@ def generateTGentries(generation_port):
     
     
 
-def generateControlPlane(channel):
+def generateControlPlane(channel, file, delayMode):
     control = open("files/tftgControlPlane.py", "w")
+    histogram = open(f"files/{file}", "r")
+    content = histogram.read()
+    histogram.close()
+    
+    delays = []
+    packets = []
     
     control.write('#from netaddr import IPAddress\n')
     control.write('p4 = bfrt.tftg.pipe\n\n')
 
-    control.write('fwd_table = p4.SwitchIngress.fwd\n\n')
-
+    control.write('fwd_table = p4.SwitchIngress.fwd\n')
+    control.write('time_table = p4.SwitchIngress.time\n\n\n')
+    
+    macthes = re.findall(r'<bin low="(\d+)ms">(\d+)</bin>', content)
+    for delay, packet in macthes:
+        delays.append(int(delay))
+        packets.append(int(packet))
+    if delayMode == 2:
+        random.shuffle(delays)
+    elif delayMode == 3:
+        new_delays = []
+        for i in range(len(delays) -1):
+            new_delays.append(random.uniform(delays[i], delays[i+1]))
+        delays = new_delays
+    
+        
+    for delay in delays:
+        control.write(f'time_table.add(delay={delay})\n')
+    
+    control.write('\n\n')
     control.write(f'fwd_table.add_with_send(ctrl=2, port={channel})\n\n')
 
     control.write('bfrt.complete_operations()')
-
+    control.close()
+    
 def generatePortConfig(output_port, channel, port_bw):
     ports = open("files/portConfig", "w")
     
