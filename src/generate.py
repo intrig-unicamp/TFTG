@@ -111,6 +111,7 @@ def generateTGentries():
 def generateControlPlane():
     control = open("files/tftgControlPlane.py", "w")
     
+    control.write('#from netaddr import IPAddress\n')
     control.write('p4 = bfrt.tftg.pipe\n\n')
 
     control.write('fwd_table = p4.SwitchIngress.fwd\n\n')
