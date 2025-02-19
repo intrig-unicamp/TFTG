@@ -1,3 +1,6 @@
+from src.generate import *
+
+
 class generator:
     
     def __init__(self, name):
@@ -77,5 +80,9 @@ class generator:
         self.ip_proto = ip_proto
         
     #send to generateFiles
-    #def ganerate(self)
-    #generatePy(blabla)
+    def ganerate(self):
+        
+        generatePortConfig(self.output_port, self.channel, self.port_bw) # type: ignore
+        generateP4() # type: ignore
+        generateControlPlane() # type: ignore
+        generateTGentries() # type: ignore
