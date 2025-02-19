@@ -1,4 +1,4 @@
-def generateTGentries():
+def generateTGentries(generation_port):
     entries = open("files/TGEntries.py", "w")
     
     
@@ -34,7 +34,7 @@ def generateTGentries():
 
 
     entries.write('print("configure timer table")\n')
-    entries.write('i_port = 68     # Default port for pktgen\n')
+    #entries.write('i_port = 68     # Default port for pktgen\n')
     entries.write('pipe_id = 0\n')
     entries.write('g_timer_app_id = 1\n')
     entries.write('batch_id = [0,1,2,3] # 0,1,2,3\n')
@@ -50,7 +50,7 @@ def generateTGentries():
     entries.write('app_id = g_timer_app_id\n')
     entries.write('pktlen = 1024\n')
     entries.write('pgen_pipe_id = 0\n')
-    entries.write('src_port = 68\n')
+    entries.write(f'src_port = {generation_port}\n')
     entries.write('p_count = 1  # packets per batch\n')
     entries.write('b_count = 1  # batch number\n')
     entries.write('buff_offset = 144  # generated packets payload will be taken from the offset in buffer\n\n')
@@ -108,7 +108,7 @@ def generateTGentries():
     
     
 
-def generateControlPlane():
+def generateControlPlane(channel):
     control = open("files/tftgControlPlane.py", "w")
     
     control.write('#from netaddr import IPAddress\n')
@@ -116,7 +116,7 @@ def generateControlPlane():
 
     control.write('fwd_table = p4.SwitchIngress.fwd\n\n')
 
-    control.write('fwd_table.add_with_send(ctrl=2, port=164)\n\n')
+    control.write(f'fwd_table.add_with_send(ctrl=2, port={channel})\n\n')
 
     control.write('bfrt.complete_operations()')
 

@@ -84,5 +84,5 @@ class generator:
         
         generatePortConfig(self.output_port, self.channel, self.port_bw) # type: ignore
         generateP4() # type: ignore
-        generateControlPlane() # type: ignore
-        generateTGentries() # type: ignore
+        generateControlPlane(self.channel) # type: ignore
+        generateTGentries(self.generation_port) # type: ignore
