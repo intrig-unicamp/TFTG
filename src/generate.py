@@ -130,14 +130,22 @@ def generateControlPlane(channel, file, delayMode):
     for delay, packet in macthes:
         delays.append(int(delay))
         packets.append(int(packet))
+        
     if delayMode == 2:
         random.shuffle(delays)
+        
     elif delayMode == 3:
         new_delays = []
-        for i in range(len(delays) -1):
-            new_delays.append(random.uniform(delays[i], delays[i+1]))
+        for i in range(len(delays)):
+            if i < len(delays) - 1 and delays[i] + 1 < delays[i + 1]:
+                new_delays.append(random.randint(delays[i] + 1, delays[i + 1] - 1))
+            elif i == len(delays) - 1 and len(delays) > 1:
+                lower_bound = delays[i - 1] + 1
+                upper_bound = delays[i] - 1
+                if lower_bound <= upper_bound:
+                    new_delays.append(random.randint(lower_bound, upper_bound))
         delays = new_delays
-    
+        random.shuffle(delays)
         
     for delay in delays:
         control.write(f'time_table.add(delay={delay})\n')
