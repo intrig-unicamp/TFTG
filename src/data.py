@@ -83,7 +83,7 @@ class generator:
     #send to generateFiles
     def generate(self):
         
-        #generatePortConfig(self.output_port, self.channel, self.port_bw) # type: ignore
-        #generateP4() # type: ignore
+        generatePortConfig(self.output_port, self.channel, self.port_bw) # type: ignore
+        generateP4() # type: ignore
         generateControlPlane(self.channel, self.file, self.delayMode) # type: ignore
-        #generateTGentries(self.generation_port) # type: ignore
+        generateTGentries(self.generation_port) # type: ignore
