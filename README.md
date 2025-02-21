@@ -40,24 +40,26 @@ git clone https://github.com/intrig-unicamp/TFTG.git
 
 - git
 - pyhton3
-- tofino sde 9.12.0
+- tofino sde 9.13.0
 
 ## How to use
 
-From the sde directory set environment variables
-```terminal
-$TOOLS/set_sde.bash
-```
+From the sde directory set environment variables (SDE BASH).
 
-Enable the output port
+After that, edit the main.py file according to the characteristics you want to generate traffic (see available commands).
+
+After edit, execute:
+```terminal
+python3 main.py
 ```
-bfshell
-ucli
-pm
-port-add 5/- 100G NONE
-port-enb 5/-
-an-set 3/- 2
+It will generate all necessary files to start the traffic generation.
+
+If everything is correct, just run the run.sh script
+
+```terminal
+./run.sh
 ```
+Then in a few seconds the traffic generator will start, and the configured traffic will be sent.
 
 ## Available commands
 
