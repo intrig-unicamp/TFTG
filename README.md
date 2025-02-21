@@ -2,6 +2,10 @@
 
 Repository of paper NETWORK-24-00606 submitted for IEEE Network Magazine special issue of Deterministic, Reliable, Resilient and Programmable Networks for 6G.
 
+⚠️**This repository is in a state of development**
+We are improving the Readme and the user interface.
+
+
 ## About TFTG
 
 TFTG, a traffic generator based on Tofino capable of creating TSN and DetNet traffic with nanoscale precision and high throughput. The proposed solution can be used in different scenarios to test standards for synchronization, reliability, and scheduling, with high flexibility in its applications.  With these functionalities, TFTG serves as an open-source solution that users can employ to test target device capabilities, abstracting different topologies and scenarios for multiple protocols and testbed configurations.
@@ -9,6 +13,20 @@ TFTG, a traffic generator based on Tofino capable of creating TSN and DetNet tra
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Available features
+
+Simple packet generation (with fixed inter-packet gaps)
+
+Packet generation for time-sensitive applications.
+
+TSN Packet transmission with TAS control. 
+
+TSN Packet transmission with ATS control.
+
+Packet Duplication using FRER and PREOF.
+
+Testing reordering function.
+
+gPTP Synchronization mode.
 
 
 
