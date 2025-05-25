@@ -1,41 +1,90 @@
 from src.generate import *
 
 
-class generator:
-    
-    def __init__(self, name):
-        #generator
+class Flow:
+    def __init__(self, name, outputPort=None, fixedDelay=None, histogramDelay=None, pcp=0, pktlen=1000, eth_dst="00:01:02:03:04:05", eth_src="00:06:07:08:09:0a", ip_src="192.168.1.1", ip_dst="192.168.1.2", delayMode=None):
         self.name = name
-        self.generation_port = 68
-        self.output_port = 0
-        self.channel = 0
-        self.port_bw = ''
-        #TSN
-        self.pktlen = 64
-        #flags
-        self.IP_defined = False
-        self.ETH_defined = False
-        
-    def addGenerationPort(self, port):
-        self.generation_port = port
-        print(f"==========\nGeneration port:\n{port}")
-    
-    def addOutputPort(self, port, channel, bw):
-        self.output_port = port
-        self.channel = channel
-        self.port_bw = bw
-        print(f"==========\nOutput:\nPhyisical Port: {port}, Port ID: {channel}, bandwitch: {bw}")
-        
-    def addFlow(self, name, mode="computed", pcp=7, pktlen=654, eth_dst="00:01:02:03:04:05", eth_src="00:06:07:08:09:0a", ip_src="198.168.1.0", ip_dst="198.168.1.1"):
-        self.name = name
-        self.mode = mode
+        self.fixedDelay = fixedDelay
+        self.histogramDelay = histogramDelay
         self.vlan_pcp = pcp
-        self.pktlen = pktlen
         self.eth_dst = eth_dst
         self.eth_src = eth_src
         self.ip_src = ip_src
         self.ip_dst = ip_dst
+        self.pktlen = pktlen
+        self.pcp = pcp
+
+        self.outputPort = outputPort
         
+        #flags
+        self.delayMode = delayMode
+
+
+class Port:
+    def __init__(self, port, channel, bw):
+        self.port = port
+        self.channel = channel
+        self.bw = bw
+        
+
+
+class generator:
+
+    def __init__(self, name):
+        #generator
+        self.name = name
+        self.generation_port = 68
+
+        self.physicalPorts = []
+        
+
+        self.flowsFixed = []
+        self.flowsHistogram = []
+
+        #TSN
+        self.pktlen = 64
+        self.fixedDelay = 10000
+        self.histogramDelay = 'NULL'
+        self.vlan_pcp = 0
+        self.eth_dst = "00:01:02:03:04:05"
+        self.eth_src = "00:06:07:08:09:0a"
+        self.ip_src = "192.168.1.1"
+        self.ip_dst = "192.168.1.2"
+        
+        #flags
+        self.IP_defined = False
+        self.ETH_defined = False
+        self.delayMode = ''
+        
+    def addGenerationPort(self, port):
+        self.generation_port = port
+        
+    
+    def addOutputPort(self, port, channel, bw):
+
+        self.physicalPorts.append(Port(port, channel, bw))
+
+        
+        
+    def addFlow(self, name, outputPort=None, fixedDelay=None, histogramDelay=None,pcp=0, pktlen=1000, eth_dst="00:01:02:03:04:05", eth_src="00:06:07:08:09:0a", ip_src="192.168.1.1", ip_dst="192.168.1.2"):
+        
+        if outputPort is None:
+            raise ValueError("Output port must be defined.")
+
+        # Verifica qual delay foi definido
+        if fixedDelay is not None and histogramDelay is not None:
+            raise ValueError("You should define type of delay: 'fixedDelay' or 'histogramDelay', never both.")
+        elif fixedDelay is not None:
+            flow = Flow(name, outputPort, fixedDelay, histogramDelay, pcp, pktlen, eth_dst, eth_src, ip_src, ip_dst, delayMode="fixed")
+            self.flowsFixed.append(flow)
+        elif histogramDelay is not None:
+            flow = Flow(name, outputPort, fixedDelay, histogramDelay, pcp, pktlen, eth_dst, eth_src, ip_src, ip_dst, delayMode="histogram")
+            self.flowsHistogram.append(flow)
+        else:
+            raise ValueError("You must define at least one delay: 'fixedDelay' or 'histogramDelay'.")
+        
+
+
     def histogram(self, name, file, delayMode=1):
         self.name = name
         self.file = file
@@ -80,10 +129,34 @@ class generator:
         self.ip_id = ip_id
         self.ip_proto = ip_proto
         
+
+    def printInfo(self):
+        print("==========\nGenerator Info:")
+        print(f"==========\nGeneration port:\n{self.generation_port}")
+        print("==========\nPhysical Ports:")
+        for port in self.physicalPorts:
+            print(f"Physical Port: {port.port}, Port ID: {port.channel}, Bandwidth: {port.bw}")
+
+        print("==========\nFlows:")
+        for flow in self.flowsFixed:
+            bits_per_packet = flow.pktlen * 8
+            seconds_per_packet = flow.fixedDelay / 1e9
+            packets_per_second = 1 / seconds_per_packet
+            throughput_bps = bits_per_packet * packets_per_second
+            throughput_mbps = throughput_bps / 1e6
+            print(f"Flow: {flow.name}, Output Port: {flow.outputPort}, Fixed Delay: {flow.fixedDelay}, Packet Size: {flow.pktlen}, Expected Throughput: {throughput_mbps:.2f} Mbps")
+        for flow in self.flowsHistogram:
+            print(f"Flow: {flow.name}, Output Port: {flow.outputPort}, Fixed Delay: {flow.fixedDelay}, Histogram Delay: {flow.histogramDelay}, PCF: {flow.vlan_pcp}, Eth_dst: {flow.eth_dst}, Eth_src: {flow.eth_src}, IP_src: {flow.ip_src}, IP_dst: {flow.ip_dst}")
+        print("==========\n")        
+
     #send to generateFiles
     def generate(self):
         
-        generatePortConfig(self.output_port, self.channel, self.port_bw) # type: ignore
+        self.printInfo()
+
+        generatePortConfig(self.physicalPorts) # type: ignore
         generateP4() # type: ignore
-        generateControlPlane(self.channel, self.file, self.delayMode) # type: ignore
-        generateTGentries(self.generation_port) # type: ignore
+        generateControlPlane(self.flowsHistogram, self.flowsFixed) # type: ignore
+
+
+        generateTGentries(self.generation_port, self.flowsFixed, self.flowsHistogram) # type: ignore

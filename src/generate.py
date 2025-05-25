@@ -1,7 +1,7 @@
 import re
 import random
 
-def generateTGentries(generation_port):
+def generateTGentries(generation_port, flowsFixed=[], flowsHistogram=[]):
     entries = open("files/TGEntries.py", "w")
     
     
@@ -39,7 +39,7 @@ def generateTGentries(generation_port):
     entries.write('print("configure timer table")\n')
     #entries.write('i_port = 68     # Default port for pktgen\n')
     entries.write('pipe_id = 0\n')
-    entries.write('g_timer_app_id = 1\n')
+    entries.write('g_timer_app_id = 0\n')
     entries.write('batch_id = [0,1,2,3] # 0,1,2,3\n')
     entries.write('packet_id = [0,1] # 0,1\n')
     entries.write('#o_port = 160     # HW port to send the packets\n\n')
@@ -69,103 +69,124 @@ def generateTGentries(generation_port):
     entries.write("[pktgen_port_cfg_table.make_key([gc.KeyTuple('dev_port', src_port)])],\n")
     entries.write("[pktgen_port_cfg_table.make_data([gc.DataTuple('pktgen_enable', bool_val=True)])])\n\n")
 
-    entries.write('# Configure the packet generation timer application\n')
-    entries.write('print("configure pktgen application")\n')
-    entries.write("data = pktgen_app_cfg_table.make_data([gc.DataTuple('timer_nanosec', 1),\n")
-    entries.write("                                gc.DataTuple('app_enable', bool_val=False),\n")
-    entries.write("                                gc.DataTuple('pkt_len', (pktlen - 6)),\n")
-    entries.write("                                gc.DataTuple('pkt_buffer_offset', buff_offset),\n")
-    entries.write("                                gc.DataTuple('pipe_local_source_port', src_port),\n")
-    entries.write("                                gc.DataTuple('increment_source_port', bool_val=False),\n")
-    entries.write("                                gc.DataTuple('batch_count_cfg', b_count - 1),\n")
-    entries.write("                                gc.DataTuple('packets_per_batch_cfg', p_count - 1),\n")
-    entries.write("                                gc.DataTuple('ibg', 0),\n")
-    entries.write("                                gc.DataTuple('ibg_jitter', 0),\n")
-    entries.write("                                gc.DataTuple('ipg', 0),\n")
-    entries.write("                                gc.DataTuple('ipg_jitter', 0),\n")
-    entries.write("                                gc.DataTuple('batch_counter', 0),\n")
-    entries.write("                                gc.DataTuple('pkt_counter', 0),\n")
-    entries.write("                                gc.DataTuple('trigger_counter', 0)],\n")
-    entries.write("                                'trigger_timer_periodic')\n")
-    entries.write('pktgen_app_cfg_table.entry_mod(\n')
-    entries.write('target,\n')
-    entries.write("[pktgen_app_cfg_table.make_key([gc.KeyTuple('app_id', g_timer_app_id)])],\n")
-    entries.write('[data])\n\n')
+    if len(flowsHistogram) > 0:
+        entries.write('# Configure the packet generation timer application\n')
+        entries.write('print("configure pktgen application")\n')
+        entries.write("data = pktgen_app_cfg_table.make_data([gc.DataTuple('timer_nanosec', 1),\n")
+        entries.write("                                gc.DataTuple('app_enable', bool_val=False),\n")
+        entries.write("                                gc.DataTuple('pkt_len', (pktlen - 6)),\n")
+        entries.write("                                gc.DataTuple('pkt_buffer_offset', buff_offset),\n")
+        entries.write("                                gc.DataTuple('pipe_local_source_port', src_port),\n")
+        entries.write("                                gc.DataTuple('increment_source_port', bool_val=False),\n")
+        entries.write("                                gc.DataTuple('batch_count_cfg', b_count - 1),\n")
+        entries.write("                                gc.DataTuple('packets_per_batch_cfg', p_count - 1),\n")
+        entries.write("                                gc.DataTuple('ibg', 0),\n")
+        entries.write("                                gc.DataTuple('ibg_jitter', 0),\n")
+        entries.write("                                gc.DataTuple('ipg', 0),\n")
+        entries.write("                                gc.DataTuple('ipg_jitter', 0),\n")
+        entries.write("                                gc.DataTuple('batch_counter', 0),\n")
+        entries.write("                                gc.DataTuple('pkt_counter', 0),\n")
+        entries.write("                                gc.DataTuple('trigger_counter', 0)],\n")
+        entries.write("                                'trigger_timer_periodic')\n")
+        entries.write('pktgen_app_cfg_table.entry_mod(\n')
+        entries.write('target,\n')
+        entries.write("[pktgen_app_cfg_table.make_key([gc.KeyTuple('app_id', g_timer_app_id)])],\n")
+        entries.write('[data])\n\n')
 
 
-    entries.write('print("configure packet buffer")\n')
-    entries.write('pktgen_pkt_buffer_table.entry_mod(\n')
-    entries.write('target,\n')
-    entries.write("[pktgen_pkt_buffer_table.make_key([gc.KeyTuple('pkt_buffer_offset', buff_offset),\n")
-    entries.write("                                gc.KeyTuple('pkt_buffer_size', (pktlen - 6))])],\n")
-    entries.write("[pktgen_pkt_buffer_table.make_data([gc.DataTuple('buffer', bytearray(bytes(p)[6:]))])])  # p[6:]))])\n\n")
+        entries.write('print("configure packet buffer")\n')
+        entries.write('pktgen_pkt_buffer_table.entry_mod(\n')
+        entries.write('target,\n')
+        entries.write("[pktgen_pkt_buffer_table.make_key([gc.KeyTuple('pkt_buffer_offset', buff_offset),\n")
+        entries.write("                                gc.KeyTuple('pkt_buffer_size', (pktlen - 6))])],\n")
+        entries.write("[pktgen_pkt_buffer_table.make_data([gc.DataTuple('buffer', bytearray(bytes(p)[6:]))])])  # p[6:]))])\n\n")
 
 
-    entries.write('print("enable pktgen")\n')
-    entries.write('pktgen_app_cfg_table.entry_mod(\n')
-    entries.write('target,\n')
-    entries.write("[pktgen_app_cfg_table.make_key([gc.KeyTuple('app_id', g_timer_app_id)])],\n")
-    entries.write("[pktgen_app_cfg_table.make_data([gc.DataTuple('app_enable', bool_val=True)],\n")
-    entries.write("                                'trigger_timer_periodic')]\n")
-    entries.write(')')
+        entries.write('print("enable pktgen")\n')
+        entries.write('pktgen_app_cfg_table.entry_mod(\n')
+        entries.write('target,\n')
+        entries.write("[pktgen_app_cfg_table.make_key([gc.KeyTuple('app_id', g_timer_app_id)])],\n")
+        entries.write("[pktgen_app_cfg_table.make_data([gc.DataTuple('app_enable', bool_val=True)],\n")
+        entries.write("                                'trigger_timer_periodic')]\n")
+        entries.write(')\n\n')
+
     
+    #flow the flows defined with fixed delay
+    for i, flow in enumerate(flowsFixed):
+        entries.write(f'app_id = {i+1}\n')
+        entries.write(f'pktlen = {flow.pktlen}\n')
+        entries.write('p = testutils.simple_ipv4ip_packet(pktlen=pktlen)\n\n')
+        entries.write('# Configure the packet generation timer application\n')
+        entries.write('print("configure pktgen application")\n')
+        entries.write(f"data = pktgen_app_cfg_table.make_data([gc.DataTuple('timer_nanosec', {flow.fixedDelay}),\n")
+        entries.write("                                gc.DataTuple('app_enable', bool_val=False),\n")
+        entries.write("                                gc.DataTuple('pkt_len', (pktlen - 6)),\n")
+        entries.write("                                gc.DataTuple('pkt_buffer_offset', buff_offset),\n")
+        entries.write("                                gc.DataTuple('pipe_local_source_port', src_port),\n")
+        entries.write("                                gc.DataTuple('increment_source_port', bool_val=False),\n")
+        entries.write("                                gc.DataTuple('batch_count_cfg', b_count - 1),\n")
+        entries.write("                                gc.DataTuple('packets_per_batch_cfg', p_count - 1),\n")
+        entries.write("                                gc.DataTuple('ibg', 0),\n")
+        entries.write("                                gc.DataTuple('ibg_jitter', 0),\n")
+        entries.write("                                gc.DataTuple('ipg', 0),\n")
+        entries.write("                                gc.DataTuple('ipg_jitter', 0),\n")
+        entries.write("                                gc.DataTuple('batch_counter', 0),\n")
+        entries.write("                                gc.DataTuple('pkt_counter', 0),\n")
+        entries.write("                                gc.DataTuple('trigger_counter', 0)],\n")
+        entries.write("                                'trigger_timer_periodic')\n")
+        entries.write('pktgen_app_cfg_table.entry_mod(\n')
+        entries.write('target,\n')
+        entries.write("[pktgen_app_cfg_table.make_key([gc.KeyTuple('app_id', app_id)])],\n")
+        entries.write('[data])\n\n')
+
+
+        entries.write('print("configure packet buffer")\n')
+        entries.write('pktgen_pkt_buffer_table.entry_mod(\n')
+        entries.write('target,\n')
+        entries.write("[pktgen_pkt_buffer_table.make_key([gc.KeyTuple('pkt_buffer_offset', buff_offset),\n")
+        entries.write("                                gc.KeyTuple('pkt_buffer_size', (pktlen - 6))])],\n")
+        entries.write("[pktgen_pkt_buffer_table.make_data([gc.DataTuple('buffer', bytearray(bytes(p)[6:]))])])  # p[6:]))])\n\n")
+
+
+        entries.write('print("enable pktgen")\n')
+        entries.write('pktgen_app_cfg_table.entry_mod(\n')
+        entries.write('target,\n')
+        entries.write("[pktgen_app_cfg_table.make_key([gc.KeyTuple('app_id', app_id)])],\n")
+        entries.write("[pktgen_app_cfg_table.make_data([gc.DataTuple('app_enable', bool_val=True)],\n")
+        entries.write("                                'trigger_timer_periodic')]\n")
+        entries.write(')\n\n')
+        
     
 
-def generateControlPlane(channel, file, delayMode):
+def generateControlPlane(flowsHistogram=[], flowsFixed=[]):
     control = open("files/tftgControlPlane.py", "w")
-    histogram = open(f"files/{file}", "r")
-    content = histogram.read()
-    histogram.close()
-    
-    delays = []
-    packets = []
-    
+
     control.write('#from netaddr import IPAddress\n')
     control.write('p4 = bfrt.tftg.pipe\n\n')
 
     control.write('fwd_table = p4.SwitchIngress.fwd\n')
-    control.write('time_table = p4.SwitchIngress.time\n\n\n')
-    
-    macthes = re.findall(r'<bin low="(\d+)ms">(\d+)</bin>', content)
-    for delay, packet in macthes:
-        delays.append(int(delay))
-        packets.append(int(packet))
-        
-    if delayMode == 2:
-        random.shuffle(delays)
-        
-    elif delayMode == 3:
-        new_delays = []
-        for i in range(len(delays)):
-            if i < len(delays) - 1 and delays[i] + 1 < delays[i + 1]:
-                new_delays.append(random.randint(delays[i] + 1, delays[i + 1] - 1))
-            elif i == len(delays) - 1 and len(delays) > 1:
-                lower_bound = delays[i - 1] + 1
-                upper_bound = delays[i] - 1
-                if lower_bound <= upper_bound:
-                    new_delays.append(random.randint(lower_bound, upper_bound))
-        delays = new_delays
-        random.shuffle(delays)
-        
-    for delay in delays:
-        control.write(f'time_table.add(delay={delay})\n')
+    #control.write('time_table = p4.SwitchIngress.time\n\n\n')
+
     
     control.write('\n\n')
-    control.write(f'fwd_table.add_with_send(ctrl=2, port={channel})\n\n')
+
+    for i, flow in enumerate(flowsFixed):
+        control.write(f'fwd_table.add_with_send(ctrl={i+1}, port={flow.outputPort})\n\n')
 
     control.write('bfrt.complete_operations()')
     control.close()
     
-def generatePortConfig(output_port, channel, port_bw):
+def generatePortConfig(physicalPorts=[]):
     ports = open("files/portConfig", "w")
     
     ports.write('ucli\n')
     ports.write('pm\n')
-    ports.write(f'port-add {output_port}/- {port_bw} NONE\n')
-    ports.write(f'port-enb {output_port}/-\n')
-    ports.write(f'an-set {output_port}/- 2 \n')
-    ports.write(f'port-dis {output_port}/-\n')
-    ports.write(f'port-enb {output_port}/-\n')
+    for port in physicalPorts:
+        ports.write(f'port-add {port.port}/- {port.bw} NONE\n')
+        ports.write(f'port-enb {port.port}/-\n')
+        ports.write(f'an-set {port.port}/- 2 \n')
+        ports.write(f'port-dis {port.port}/-\n')
+        ports.write(f'port-enb {port.port}/-\n')
     ports.write('show\n')
     ports.write('exit\n')
     ports.write('exit\n')
@@ -241,14 +262,63 @@ def generateP4():
             
     filep4.write('        pktgen_timer_header_t pktgen_pd_hdr = packet.lookahead<pktgen_timer_header_t>();\n')
     filep4.write('        transition select(pktgen_pd_hdr.app_id) {\n')
-    filep4.write('            1 : parse_pktgen_timer;\n')
+    filep4.write('            0 : parse_pktgen_timer;\n')
+    filep4.write('            1 : parse_pktgen_timer_1;\n')
+    filep4.write('            2 : parse_pktgen_timer_2;\n')
+    filep4.write('            3 : parse_pktgen_timer_3;\n')
+    filep4.write('            4 : parse_pktgen_timer_4;\n')
+    filep4.write('            5 : parse_pktgen_timer_5;\n')
+    filep4.write('            6 : parse_pktgen_timer_6;\n')
+    filep4.write('            7 : parse_pktgen_timer_7;\n')
     filep4.write('            default : reject;\n')
     filep4.write('        }\n')
     filep4.write('    }\n\n')
 
     filep4.write('    state parse_pktgen_timer {\n')
     filep4.write('        //packet.extract(hdr.timer);\n')
+    filep4.write('        ig_md.ctrl = 0;\n')
+    filep4.write('        transition parse_ethernet;\n')
+    filep4.write('    }\n\n')
+
+    filep4.write('    state parse_pktgen_timer_1 {\n')
+    filep4.write('        //packet.extract(hdr.timer);\n')
+    filep4.write('        ig_md.ctrl = 1;\n')
+    filep4.write('        transition parse_ethernet;\n')
+    filep4.write('    }\n\n')
+
+    filep4.write('    state parse_pktgen_timer_2 {\n')
+    filep4.write('        //packet.extract(hdr.timer);\n')
     filep4.write('        ig_md.ctrl = 2;\n')
+    filep4.write('        transition parse_ethernet;\n')
+    filep4.write('    }\n\n')
+
+    filep4.write('    state parse_pktgen_timer_3 {\n')
+    filep4.write('        //packet.extract(hdr.timer);\n')
+    filep4.write('        ig_md.ctrl = 3;\n')
+    filep4.write('        transition parse_ethernet;\n')
+    filep4.write('    }\n\n')
+
+    filep4.write('    state parse_pktgen_timer_4 {\n')
+    filep4.write('        //packet.extract(hdr.timer);\n')
+    filep4.write('        ig_md.ctrl = 4;\n')
+    filep4.write('        transition parse_ethernet;\n')
+    filep4.write('    }\n\n')
+
+    filep4.write('    state parse_pktgen_timer_5 {\n')
+    filep4.write('        //packet.extract(hdr.timer);\n')
+    filep4.write('        ig_md.ctrl = 5;\n')
+    filep4.write('        transition parse_ethernet;\n')
+    filep4.write('    }\n\n')
+
+    filep4.write('    state parse_pktgen_timer_6 {\n')
+    filep4.write('        //packet.extract(hdr.timer);\n')
+    filep4.write('        ig_md.ctrl = 6;\n')
+    filep4.write('        transition parse_ethernet;\n')
+    filep4.write('    }\n\n')
+
+    filep4.write('    state parse_pktgen_timer_7 {\n')
+    filep4.write('        //packet.extract(hdr.timer);\n')
+    filep4.write('        ig_md.ctrl = 7;\n')
     filep4.write('        transition parse_ethernet;\n')
     filep4.write('    }\n\n')
 
