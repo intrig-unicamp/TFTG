@@ -64,24 +64,51 @@ Then in a few seconds the traffic generator will start, and the configured traff
 ## Available commands
 
 ### Setup commands
+Next, we describe the setup commands which are mandatory for traffic generation to work. They are mainly related to the configuration of Tofino and its ports.
 
-#### Add output port
-Add the output port for the configurated traffic
-Parameters: P_ID of output port (Tofino P-ID)
+#### Creating the generator
+
+You can use the below code to create an instance of our traffic generator (in the main.py file) with the name you prefer
+```python
+TG = generator("tftg")
+```
+#### Configuring the output ports
+
+You need to define the physical output ports that will be used to send the configurated traffic. These ports are physical ports on Tofino, and should be configured appropriately with your setup.
+
+Parameters: Port number, Port ID (D_P) and bandwidth
 
 Usage:
 ```python
-# addGenerationPort(P_ID) Adiciona a porta de geração de trafego
-Gerador.addGenerationPort(68)
+#Add a new output port
+TG.addOutputPort(1, 132, "100G") #Physical Port, Port ID(D_P), Port bw 
+```
 
-# Adiciona a porta de saida do equipamento
-Gerador.addOutputPort(5, 160, "100G") #Physical Port, Port ID(D_P), Port bw
+#### Configuring the generation port
+
+You should also define which port will be used to generate the traffic. This will affect which pipeline or traffic will arrive, so if you have questions about how this works, read section 9 of the [Tofino documentation](https://raw.githubusercontent.com/barefootnetworks/Open-Tofino/master/PUBLIC_Tofino-Native-Arch.pdf).
+
+Usage:
+```python
+TG.addGenerationPort(68) 
 ```
 
 ### Generation commands
+Next, we describe the commands used to configure the traffic that will be generated.
 
-#### Add a packet flow
-Add a new flow of packets to be generated. The optional parameters have default values and can be set later in the code
+#### Creating a simple flow
+Add a new flow of packets to be generated. This flow has a fixed inter-packet gap (IPG) and packet size. You just need to define the name, the fixed delay em nanoseconds, the packet size and the desired output port (D_P of the port).
+
+```python
+# create a simple flow
+TG.addFlow("flow1", fixedDelay=10000, pktLen=1000, outputPort=134) 
+```
+This will create a flow of ethernet packets with the desired IPG, len, and sent to the output port.
+
+
+#### Customizing a simple flow
+
+Coming soon...
 
 Mandatory parameters: 
  - Name of the flow (for later identification)
